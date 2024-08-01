@@ -1,0 +1,42 @@
+name: Generate Plugin Index
+
+on:
+  push:
+
+jobs:
+
+  build:
+    runs-on: windows-latest 
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 
+
+      - name: List files
+        run: ls
+
+      - name: Install Index Generator
+        run: |
+          Invoke-WebRequest -Uri https://github.com/ClassIsland/ClassIsland.PluginIndexGenerator/releases/download/latest/ClassIsland.PluginIndexGenerator.zip -OutFile ClassIsland.PluginIndexGenerator.zip
+          Expand-Archive -Path ClassIsland.PluginIndexGenerator.zip -DestinationPath .
+      
+      - name: Generate Plugin Index
+        run: |
+          mkdir out/source/
+          ./ClassIsland.PluginIndexGenerator.exe index out/source/index.json -b base.json
+          7z a "./out/index.zip" ./out/source/* -r -mx=9
+          rm -r -Force out/source/
+          
+      - name: Generate MD5
+        run: |
+          pwsh -ep Bypass -c .\tools\generate-md5.ps1 ./out
+
+      - name: Upload to release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: latest
+          artifacts: ./out/*.zip,./out/*.md5sum
+          bodyFile: ./out/checksums.md
+          token: ${{ secrets.GITHUB_TOKEN }}
