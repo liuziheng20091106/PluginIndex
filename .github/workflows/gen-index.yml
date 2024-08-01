@@ -36,6 +36,8 @@ jobs:
       - name: Upload to release
         uses: ncipollo/release-action@v1
         with:
+          tag: latest
+          allowUpdates: true
           artifacts: ./out/*.zip,./out/*.md5sum
           bodyFile: ./out/checksums.md
           token: ${{ secrets.GITHUB_TOKEN }}
