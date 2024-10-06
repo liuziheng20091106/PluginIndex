@@ -1,7 +1,8 @@
-name: Generate Plugin Index
+name: Validate
 
 on:
-  push:
+  pull_request:
+    types: [opened, reopened]
   workflow_dispatch:
 
 jobs:
