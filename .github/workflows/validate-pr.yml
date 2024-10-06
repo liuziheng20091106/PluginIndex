@@ -27,6 +27,6 @@ jobs:
       - name: Validate Plugin Index
         run: |
           mkdir out/source/
-          ./ClassIsland.PluginIndexGenerator.exe index out/source/index.json -b base.json -v
+          ./ClassIsland.PluginIndexGenerator.exe index out/source/index.json -b base.json -v true
           
 
